@@ -46,7 +46,7 @@ Like the former, only useful once
 This is required to initialize piece offsets so that translation animations can work properly.  
 Only needed once.
 
-5) Plug and play the exported stuff into your greater script's logic. Sadly, exporter won't do all the work for you - it only allows you to separate artwork and programming.
+5) **Plug and play** the exported stuff into your greater script's logic. Sadly, exporter won't do all the work for you - it only allows you to separate artwork and programming.
 
 Limitations and bugs
 ====================
