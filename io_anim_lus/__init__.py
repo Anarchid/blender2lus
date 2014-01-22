@@ -116,51 +116,52 @@ class ExportLUS(bpy.types.Operator, ExportHelper):
             if(write_pieces):
                 file.write("local "+ob.name+" = piece('"+ob.name+"');\n")
             
-            curves = ob.animation_data.action.fcurves;
-            for c in curves:
-                if(not c.data_path in props.keys()):
-                    print('skipping curve for property '+c.data_path)
-                    continue
-                
-                backtrack = None;
-                
-                keyframes = c.keyframe_points
-                i = 0
-                for k in keyframes:    
-                    print("adding "+ob.name+" "+c.data_path+"<"+str(c.array_index)+"> keyframe "+str(i)+' at <'+str(k.co[0])+','+str(k.co[1])+">")
+            if (not ob.animation_data is None):
+                curves = ob.animation_data.action.fcurves;
+                for c in curves:
+                    if(not c.data_path in props.keys()):
+                        print('skipping curve for property '+c.data_path)
+                        continue
                     
-                    kf_value = k.co[1]
+                    backtrack = None;
                     
-                    if(c.data_path == 'rotation_euler'):
-                        kf_value = kf_value * rotation_axis_mults[c.array_index]
+                    keyframes = c.keyframe_points
+                    i = 0
+                    for k in keyframes:    
+                        print("adding "+ob.name+" "+c.data_path+"<"+str(c.array_index)+"> keyframe "+str(i)+' at <'+str(k.co[0])+','+str(k.co[1])+">")
                         
-                    if (backtrack is None):
-                        print('no backtrack for '+str(c.data_path)+str(c.array_index)+": declaring initial")
-                        timeline[k.co[0]][ob.name][c.data_path][c.array_index]['value'] = kf_value
-                        timeline[k.co[0]][ob.name][c.data_path][c.array_index]['target'] = kf_value
-                        timeline[k.co[0]][ob.name][c.data_path][c.array_index]['speed'] = 0
+                        kf_value = k.co[1]
                         
-                        print('timeline value is now '+str(timeline[k.co[0]][ob.name][c.data_path][c.array_index]['value']))
-                    else:
-                        print('backtrack found for '+str(c.data_path)+str(c.array_index)+": "+str(backtrack))
-                        timeline[k.co[0]][ob.name][c.data_path][c.array_index]['value'] = kf_value
-                        
-                        time = k.co[0] - backtrack
-                        old_value = timeline[backtrack][ob.name][c.data_path][c.array_index]['value']
-                        
-                        if(old_value == {}):
-                            print('value of previous keyframe is nil!?')
-                            diff = 0
+                        if(c.data_path == 'rotation_euler'):
+                            kf_value = kf_value * rotation_axis_mults[c.array_index]
+                            
+                        if (backtrack is None):
+                            print('no backtrack for '+str(c.data_path)+str(c.array_index)+": declaring initial")
+                            timeline[k.co[0]][ob.name][c.data_path][c.array_index]['value'] = kf_value
+                            timeline[k.co[0]][ob.name][c.data_path][c.array_index]['target'] = kf_value
+                            timeline[k.co[0]][ob.name][c.data_path][c.array_index]['speed'] = 0
+                            
+                            print('timeline value is now '+str(timeline[k.co[0]][ob.name][c.data_path][c.array_index]['value']))
                         else:
-                            diff = kf_value - old_value
-                        # our blender time is in frames, but turn/move commands want radians|elmos per second
-                        # there are 30 spring frames in a second, which means, speed per second = 30x speed per frame 
-                        speed = abs(diff/time) * 30
-                        
-                        timeline[backtrack][ob.name][c.data_path][c.array_index]['speed'] = speed
-                        timeline[backtrack][ob.name][c.data_path][c.array_index]['target'] = kf_value
-                    backtrack = k.co[0]
-                    i+=1
+                            print('backtrack found for '+str(c.data_path)+str(c.array_index)+": "+str(backtrack))
+                            timeline[k.co[0]][ob.name][c.data_path][c.array_index]['value'] = kf_value
+                            
+                            time = k.co[0] - backtrack
+                            old_value = timeline[backtrack][ob.name][c.data_path][c.array_index]['value']
+                            
+                            if(old_value == {}):
+                                print('value of previous keyframe is nil!?')
+                                diff = 0
+                            else:
+                                diff = kf_value - old_value
+                            # our blender time is in frames, but turn/move commands want radians|elmos per second
+                            # there are 30 spring frames in a second, which means, speed per second = 30x speed per frame 
+                            speed = abs(diff/time) * 30
+                            
+                            timeline[backtrack][ob.name][c.data_path][c.array_index]['speed'] = speed
+                            timeline[backtrack][ob.name][c.data_path][c.array_index]['target'] = kf_value
+                        backtrack = k.co[0]
+                        i+=1
                     
         keys = sorted(timeline.keys())
         
