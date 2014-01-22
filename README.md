@@ -51,6 +51,8 @@ Limitations and bugs
 ====================
 * You absolutely **have** to change every object in your scene into Euler ZYX rotation mode, or untold horrors will plague you.
 
+* Your object names have to be valid Lua variable names, because object names are not validated in any way. Generally, avoid anything containting spaces and punctuation marks.
+
 * You **cannot** have multiple animations per blender file. Blender's Actions system doesn't really accomodate for a horror soup of a dozen objects trying to dance in concert.
 
 * You can only use **Linear** interpolation between your keyframes, because there's no way to implement Bezier in Spring LUS... at least yet.  
