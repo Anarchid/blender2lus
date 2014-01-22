@@ -25,7 +25,7 @@ Using
 
 * You will have to apply all scale and rotation transformations before exporting the model and starting your animation work. Whatever model you use ingame has to perfectly match to what you will be animating on.
 
-**2) Obsessively change each object's Rotation Mode** in the hidden right pannel (or in object transform properties) to **"Euler ZYX"**.  
+**2) Obsessively change each object's Rotation Mode** in the hidden right pannel (or in object transform properties) to **"Euler ZXY"**.  
 I haven't found any way to do this quickly for all objects in scene, so good luck doing this by hand.  
  
 If you skip this step, **nobody** will help you. Not even heaven, not even Allah.
@@ -49,7 +49,7 @@ Only needed once.
 
 Limitations and bugs
 ====================
-* You absolutely **have** to change every object in your scene into Euler ZYX rotation mode, or untold horrors will plague you.
+* You absolutely **have** to change every object in your scene into Euler ZXY rotation mode, or untold horrors will plague you.
 
 * Your object names have to be valid Lua variable names, because object names are not validated in any way. Generally, avoid anything containting spaces and punctuation marks.
 
