@@ -24,7 +24,6 @@ Using
 * Each animatable piece of the model is a separate object
 
 * You will have to apply all scale and rotation transformations before exporting the model and starting your animation work. Whatever model you use ingame has to perfectly match to what you will be animating on.
-(*You can actually get away from applying rotations in later Spring versions. Scaling is strictly off-limits though* ).
 
 **2) Obsessively change each object's Rotation Mode** in the hidden right pannel (or in object transform properties) to **"Euler ZYX"**.  
 I haven't found any way to do this quickly for all objects in scene, so good luck doing this by hand.  
@@ -58,6 +57,10 @@ Limitations and bugs
 Workaround: Use *a lot* of keyframes if you want smooth motion.
 
 * You have to apply scaling transforms before export, and you **cannot use scaling** in your animations. In fact, you're limited to using LocRot.
+
+* Local rotation transforms of each object in model's "bind pose" must be strictly 0,0,0. 
+
+* You **cannot** use inverse kinematics, because you cannot use bones (at least, not without amount of effort making this approach self-defeating. This might be addressed in the future, but don't hold your breath).
 
 * The first keyframe will only be interpreted as a reference to calculate turn/move speeds for affected pieces. Not important if your model starts in same pose as your animation, but transitions between already adjusted poses to new animations will be "kinda smooth". This is a **bug**. You can probably get around by adding two keyframes at start (at frame 0, initial , and frame 1, snap!)
 
