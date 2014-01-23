@@ -25,6 +25,8 @@ Using
 
 * You will have to apply all scale and rotation transformations before exporting the model and starting your animation work. Whatever model you use ingame has to perfectly match to what you will be animating on.
 
+* Preferred export format for Spring import is .dae - others might work, but there's little guarantee.
+
 **2) Obsessively change each object's Rotation Mode** in the hidden right pannel (or in object transform properties) to **"Euler ZXY"**.  
 I haven't found any way to do this quickly for all objects in scene, so good luck doing this by hand.  
  
