@@ -45,7 +45,7 @@ class AutoVivification(dict):
             return value
 
 class ExportLUS(bpy.types.Operator, ExportHelper):
-    """Save a LUS animscript from each action defined in scene/selection"""
+    """Save a scene-wide LUS animscript from currently active action on each object"""
     bl_idname = "export_lus.lua"
     bl_label = "Export LUS"
 
@@ -83,14 +83,11 @@ class ExportLUS(bpy.types.Operator, ExportHelper):
     def poll(cls, context):
         obj = context.object
         if(obj):
-            print('LusExport:poll received from object of type'+obj.type)
             return True
         else:
-            print('LusExport:polling a non-object? huh? whatevs.')
             return True
 
     def invoke(self, context, event):
-        print('LusExport:inglwnafh wgahnagl!')
         return super().invoke(context, event)
 
     def execute(self, context):
