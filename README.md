@@ -68,6 +68,4 @@ Workaround: Use *a lot* of keyframes if you want smooth motion.
 
 * The first keyframe will only be interpreted as a reference to calculate turn/move speeds for affected pieces. Not important if your model starts in same pose as your animation, but transitions between already adjusted poses to new animations will be "kinda smooth". This is a **bug**. You can probably get around by adding two keyframes at start (at frame 0, initial , and frame 1, snap!)
 
-* **Requires modern version of Spring**. That is, anything from 95.0 inclusive. Projects still stuck on 91.0 are SOL.
-
 * **Any** glaring horror i forgot to add to this readme. There are probably quite a few of those. Watch your step and report on sight.
