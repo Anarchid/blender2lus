@@ -27,12 +27,7 @@ bl_info = {
 
 import bpy
 
-from bpy.props import (StringProperty,
-                       FloatProperty,
-                       IntProperty,
-                       BoolProperty,
-                       EnumProperty,
-                       )
+from bpy.props import (StringProperty,EnumProperty)
 from bpy_extras.io_utils import ExportHelper
 
 class AutoVivification(dict):
@@ -55,29 +50,14 @@ class ExportLUS(bpy.types.Operator, ExportHelper):
             options={'HIDDEN'},
             )
     
-    anim_name = StringProperty(
-        name = "Anim name",
-        default="myAnimation",
-        description="name for the animation inside the animations table, if you want more than one for this model",
-        )
-    
-    write_pieces = BoolProperty(
-        name="Write Pieces",
-        description="includes piece declarations in exported file, typically useful once per model",
-        default=True,
-        )
-    
-    write_function = BoolProperty(
-        name="Write Animate() function",
-        description="includes the Animate() function in exported file to playback saved keyframes",
-        default=True,
-        )
-    
-    write_create = BoolProperty(
-        name="Write Create() function",
-        description="includes the bindpose adjustment function in exported file, typically useful once per model",
-        default=True,
-        )
+    mode = EnumProperty(
+                items=(('main', "Main Script File", "Export the animation alongside the animation framweork"),
+                       ('include', "Animation Include", "Export just the animation as an include for the main script"),
+                       ),
+                name="Script type",
+                description="Type of animation script to create",
+                default='include',
+                )
 
     @classmethod
     def poll(cls, context):
@@ -91,12 +71,17 @@ class ExportLUS(bpy.types.Operator, ExportHelper):
         return super().invoke(context, event)
 
     def execute(self, context):
-        print("LusExport:execute him!");
         keywords = self.as_keywords(ignore=("check_existing", "filter_glob"))
         return self.export(self, context, **keywords)
     
-    def export(self, operator, context, filepath="", anim_name="myAnimation", write_pieces=True,write_function=True,write_create=True):
+    def export(self, operator, context, filepath="", mode="main"):
         print('exporting to '+str(filepath));
+        
+        only_keyframes = (mode == "include")
+        anim_name=bpy.path.display_name_from_filepath(bpy.context.blend_data.filepath)
+        write_pieces = (mode == "main")
+        write_function = (mode == "main")
+        write_create = (mode == "main")
 
         timeline = AutoVivification()
         props = {"location":"move", "rotation_euler":"turn"} 
@@ -108,11 +93,21 @@ class ExportLUS(bpy.types.Operator, ExportHelper):
         from math import degrees
         file = open(filepath, "w", encoding="utf8", newline="\n")
         
-        for ob in bpy.data.objects:
-            
-            if(write_pieces):
+        if(write_pieces and not only_keyframes):
+            for ob in bpy.data.objects:
                 file.write("local "+ob.name+" = piece('"+ob.name+"');\n")
-            
+            file.write("local scriptEnv = {")
+            for ob in bpy.data.objects:
+                file.write("\t"+ob.name+" = "+ob.name+",\n")
+            file.write('\tx_axis = x_axis,\n')
+            file.write('\ty_axis = y_axis,\n')
+            file.write('\tz_axis = z_axis,\n')
+            file.write('}\n\n')
+            file.write('local Animations = {};\n')
+            file.write('-- you can include externally saved animations like this:\n')
+            file.write('-- Animations[\'importedAnimation\'] = VFS.Include("Scripts/animations/animationscript.lua", scriptEnv)\n')
+                    
+        for ob in bpy.data.objects:
             if (not ob.animation_data is None):
                 if(not ob.animation_data.action is None):
                     curves = ob.animation_data.action.fcurves;
@@ -185,11 +180,11 @@ class ExportLUS(bpy.types.Operator, ExportHelper):
             if len(kf) == 0:
                 print("keyframe "+str(k)+" is idle, but keeping for trailing Sleep() calculation")
                 #del timeline[k]
-
-        if write_pieces:
-            file.write('local Animations = {};\n')
         
-        file.write("\nAnimations['"+anim_name+"'] = {\n")
+        if (only_keyframes):
+            file.write("return {\n")
+        else:
+            file.write("\nAnimations['"+anim_name+"'] = {\n")
                         
         keys = sorted(timeline.keys())
         for k in keys:
@@ -207,7 +202,7 @@ class ExportLUS(bpy.types.Operator, ExportHelper):
             file.write("\t\t}\n\t},\n")
         file.write("}\n")
         
-        if write_create:
+        if write_create and not only_keyframes:
             file.write("""
 function constructSkeleton(unit, piece, offset)
     if (offset == nil) then
@@ -257,7 +252,7 @@ function script.Create()
 end
             """)
         
-        if write_function:
+        if write_function and not only_keyframes:
             file.write("""
 local animCmd = {['turn']=Turn,['move']=Move};
 function PlayAnimation(animname)
@@ -283,13 +278,11 @@ def menu_func_export(self, context):
     self.layout.operator(ExportLUS.bl_idname, text="SpringRTS Lua Unit Script (.lua)")
 
 def register():
-    print("LusExport:Hello cruel world");
     bpy.utils.register_class(ExportLUS)
     bpy.types.INFO_MT_file_export.append(menu_func_export)
 
 def unregister():
     bpy.utils.unregister_class(ExportLUS)
-    print('LusExport: goodbye cruel world');
 
 if __name__ == "__main__":
     register()
