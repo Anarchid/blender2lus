@@ -32,7 +32,7 @@ Using
 * It's possible to do this reasonably fast by posting the following snippet into Blender's Python console:
 ```
 	for i in bpy.data.objects:
-	i.rotation_mode = 'ZXY'
+	    i.rotation_mode = 'ZXY'
 ```
  
 * If you skip this step, your animations will not be usable. Switching rotation mode on already existing keyframe data does not convert the keyframes automatically, thus ruining the animation.
