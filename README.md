@@ -28,9 +28,14 @@ Using
 * Preferred export format for Spring import is .dae - others might work, but there's little guarantee.
 
 **2) Obsessively change each object's Rotation Mode** in the hidden right pannel (or in object transform properties) to **"Euler ZXY"**.  
-I haven't found any way to do this quickly for all objects in scene, so good luck doing this by hand.  
+
+* It's possible to do this reasonably fast by posting the following snippet into Blender's Python console:
+```
+	for i in bpy.data.objects:
+	i.rotation_mode = 'ZXY'
+```
  
-If you skip this step, **nobody** will help you. Not even heaven, not even Allah.
+* If you skip this step, your animations will not be usable. Switching rotation mode on already existing keyframe data does not convert the keyframes automatically, thus ruining the animation.
 
 **3) Create your animation**. *Mind the limitations*.
 
