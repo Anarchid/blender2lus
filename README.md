@@ -64,6 +64,4 @@ Workaround: Use *a lot* of keyframes if you want smooth motion.
 
 * You **cannot** use inverse kinematics, because you cannot use bones (at least, not without amount of effort making this approach self-defeating. This might be addressed in the future, but don't hold your breath).
 
-* The first keyframe will only be interpreted as a reference to calculate turn/move speeds for affected pieces. Not important if your model starts in same pose as your animation, but transitions between already adjusted poses to new animations will be "kinda smooth". This is a **bug**. You can probably get around by adding two keyframes at start (at frame 0, initial , and frame 1, snap!)
-
 * **Any** glaring horror i forgot to add to this readme. There are probably quite a few of those. Watch your step and report on sight.
