@@ -45,12 +45,12 @@ class ExportLUS(bpy.types.Operator, ExportHelper):
     bl_label = "Export LUS"
 
     filename_ext = ".lua"
-    filter_glob = StringProperty(
+    filter_glob = bpy.props.StringProperty(
             default="*.lua",
             options={'HIDDEN'},
             )
     
-    mode = EnumProperty(
+    mode = bpy.props.EnumProperty(
                 items=(('main', "Main Script File", "Export the animation alongside the animation framweork"),
                        ('include', "Animation Include", "Export just the animation as an include for the main script"),
                        ),
