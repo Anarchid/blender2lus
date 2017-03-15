@@ -60,8 +60,5 @@ Workaround: Use *a lot* of keyframes if you want smooth motion.
 
 * You have to apply scaling transforms before export, and you **cannot use scaling** in your animations. In fact, you're limited to using LocRot.
 
-* Local rotation transforms of each object in model's "bind pose" must be strictly 0,0,0. 
-
 * You **cannot** use inverse kinematics, because you cannot use bones (at least, not without amount of effort making this approach self-defeating. This might be addressed in the future, but don't hold your breath).
 
-* **Any** glaring horror i forgot to add to this readme. There are probably quite a few of those. Watch your step and report on sight.
