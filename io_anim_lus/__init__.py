@@ -18,10 +18,15 @@
 
 bl_info = {
     "name": "Export: SpringRTS Lua Unit Script (LUS)",
-    "author": "Anarchid",
-    "blender": (2, 69, 0),
+    "author": "Anarchids Penis",
+	"version" : (0,1,2),
+    "blender": (2, 80,0),
     "location": "File > Import-Export",
+	'warning': '',
+	  'wiki_url': 'https://github.com/Anarchid/blender2lus',
+	'tracker_url': 'https://github.com/Anarchid/blender2lus/issues',
     "description": "Export Lua Unit Scripts from scene-defined actions",
+	'support': 'COMMUNITY',
     "category": "Import-Export"
     }
 
@@ -275,14 +280,30 @@ end
         return {'FINISHED'}
 
 def menu_func_export(self, context):
-    self.layout.operator(ExportLUS.bl_idname, text="SpringRTS Lua Unit Script (.lua)")
+                    self.layout.operator(
+                    ExportLUS.bl_idname,
+                    text="SpringRTS Lua Unit Script (.lua)"
+                    )
+
+def add_object_manual_map():
+    url_manual_prefix = "https://github.com/Anarchid/blender2lus"
+    url_manual_mapping = (
+        ("bpy.ops.mesh.add_object", "editors/3dview/object"),
+    )
+    return url_manual_prefix, url_manual_mapping
+
+
 
 def register():
     bpy.utils.register_class(ExportLUS)
-    bpy.types.INFO_MT_file_export.append(menu_func_export)
+    bpy.utils.register_manual_map(add_object_manual_map)
+    bpy.types.VIEW3D_MT_mesh_add.append(menu_func_export)
 
 def unregister():
     bpy.utils.unregister_class(ExportLUS)
+    bpy.utils.unregister_manual_map(add_object_manual_map)
+    bpy.types.VIEW3D_MT_mesh_add.remove(menu_func_export)
+
 
 if __name__ == "__main__":
     register()
