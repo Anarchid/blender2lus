@@ -18,7 +18,7 @@
 
 bl_info = {
     "name": "Export: SpringRTS Lua Unit Script (LUS)",
-    "author": "Anarchid",
+    "author": "An orchid",
 	"version" : (0,1,2),
     "blender": (2, 80,0),
     "location": "File > Import-Export",
@@ -27,11 +27,13 @@ bl_info = {
 	'tracker_url': 'https://github.com/Anarchid/blender2lus/issues',
     "description": "Export Lua Unit Scripts from scene-defined actions",
 	'support': 'COMMUNITY',
-    "category": "Import-Export"
+    "category": "Export"
     }
 
 import bpy
-
+from bpy.types import Operator
+from bpy_extras.object_utils import AddObjectHelper, object_data_add
+from mathutils import Vector
 from bpy.props import (StringProperty,EnumProperty)
 from bpy_extras.io_utils import ExportHelper
 
@@ -48,6 +50,8 @@ class ExportLUS(bpy.types.Operator, ExportHelper):
     """Save a scene-wide LUS animscript from currently active action on each object"""
     bl_idname = "export_lus.lua"
     bl_label = "Export LUS"
+    #bl_space_type='VIEW_3D'
+    #bl_context_mode='OBJECT'
 
     filename_ext = ".lua"
     filter_glob = bpy.props.StringProperty(
@@ -285,7 +289,7 @@ def menu_func_export(self, context):
                     text="SpringRTS Lua Unit Script (.lua)"
                     )
 
-def add_object_manual_map():
+def export_manual_map():
     url_manual_prefix = "https://github.com/Anarchid/blender2lus"
     url_manual_mapping = (
         ("bpy.ops.mesh.add_object", "editors/3dview/object"),
@@ -295,15 +299,26 @@ def add_object_manual_map():
 
 
 def register():
-    bpy.utils.register_class(ExportLUS)
-    bpy.utils.register_manual_map(add_object_manual_map)
-    bpy.types.VIEW3D_MT_mesh_add.append(menu_func_export)
-
+    if (2, 80, 0) < bpy.app.version:
+        bpy.utils.register_class(ExportLUS)
+        bpy.types.TOPBAR_MT_file_export.append(menu_func_export)      
+    else:
+        bpy.utils.register_class(__name__)
+        bpy.types.TOPBAR_MT_file_export.append(menu_func_export)
+    #endif
+    
+    bpy.utils.register_manual_map(export_manual_map)
+   
 def unregister():
-    bpy.utils.unregister_class(ExportLUS)
-    bpy.utils.unregister_manual_map(add_object_manual_map)
-    bpy.types.VIEW3D_MT_mesh_add.remove(menu_func_export)
-
+    if (2, 80, 0) < bpy.app.version:
+        bpy.utils.unregister_class(ExportLUS)
+        bpy.types.TOPBAR_MT_file_export.remove(menu_func_export)
+    else:
+        bpy.utils.unregister_class(__name__)
+        bpy.types.TOPBAR_MT_file_export.remove(menu_func_export)       
+    #endif
+    
+    bpy.utils.unregister_manual_map(export_manual_map)
 
 if __name__ == "__main__":
     register()
