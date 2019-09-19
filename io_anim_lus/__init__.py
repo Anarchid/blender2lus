@@ -18,7 +18,7 @@
 
 bl_info = {
     "name": "Export: SpringRTS Lua Unit Script (LUS)",
-    "author": "An orchid",
+    "author": "Anarchid",
 	"version" : (0,1,2),
     "blender": (2, 80,0),
     "location": "File > Import-Export",
