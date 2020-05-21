@@ -49,7 +49,7 @@ Using
 
 Limitations and bugs
 ====================
-* You absolutely **have** to change every object in your scene into Euler ZXY rotation mode, or untold horrors will plague you.
+* You absolutely **have** to change every object in your scene into Euler ZXY rotation mode before starting your animation work, or the animation will be irrecoverably incorrect.
 
 * Your object names have to be valid Lua variable names, because object names are not validated in any way. Generally, avoid anything containting spaces and punctuation marks.
 
